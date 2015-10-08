@@ -2,20 +2,21 @@
 <html ng-app="roachPatrol">
 <head>
     <meta charset="utf-8">
-    <title>Roach Patrol</title>
+    <title>PDX Clean Eats</title>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<script src="app/lib/jquery.js"></script>
 	<script src="app/lib/bootstrap.js"></script>
 	<script src="app/lib/angular.min.js"></script>
+	<script src="app/lib/angular-ui-router.min.js"></script>
 	<script src="app/lib/app.js"></script>
 	<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.css' type='text/css' media='all' />
  	<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 </head>
-<body ng-controller="restaurantController">
+<body ng-controller="restaurantController" data-ng-init="init()">
 	<div class="sidebarMenu">
 		<div class="container-fluid">
 			<div class="row">
@@ -24,7 +25,7 @@
 				</button>
 				<h2 class="pull-left">PDX Clean Eats</h2>
 				<div class="gpsBtn pull-right">
-					<button type="button" id="myPosition" class="btn btn-default" onclick="showMenu()" ng-click="searchMyLatLng()" aria-label="My Position">
+					<button type="button" id="myPosition" class="btn btn-default" onclick="showMenu()" ng-click="searchMyLatLng(distanceSlider)" aria-label="My Position">
 						<span class="fa fa-location-arrow" aria-hidden="true"></span>
 					</button>
 				</div>
@@ -34,15 +35,13 @@
 				<div class="input-group">
 					<input type="text" ng-model="searchKeyword" class="form-control" placeholder="eg Pizza or Flying Pie" required>
 					<span class="input-group-btn">
-						<button class="btn btn-primary" ng-click="searchByName(searchKeyword)" onclick="showMenu()" type="button">
+						<button class="btn btn-primary" ng-click="searchByName(searchKeyword,distanceSlider)" onclick="showMenu()" type="button">
 							<span class="fa fa-search" aria-hidden="true"></span>
 						</button>
 					</span>
 				</div>
 			</div>
-			<div class="verticalSpace">
-				Distance: <input type="range" ng-model="distanceSlider" min="0" max="5" step="0.1" value="1" id="fader">
-			</div>
+			<hr>
 			<div class="verticalSpace">
 				<label>Search by</label>
 				<div class="btn-group">
@@ -50,11 +49,11 @@
     				Neighborhood <span class="caret"></span>
   					</button>
 					<ul class="dropdown-menu">
-						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('N')">N - Portland</a></li>
-						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('NE')">NE - Portland</a></li>
-						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('SE')">SE - Portland</a></li>
-						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('SW')">SW - Portland</a></li>
-						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('NW')">NW - Portland</a></li>
+						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('N',distanceSlider)">N - Portland</a></li>
+						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('NE',distanceSlider)">NE - Portland</a></li>
+						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('SE',distanceSlider)">SE - Portland</a></li>
+						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('SW',distanceSlider)">SW - Portland</a></li>
+						<li><a href="#" onclick="showMenu()" ng-click="searchByArea('NW',distanceSlider)">NW - Portland</a></li>
 					</ul>
 				</div>
 			</div>
@@ -68,42 +67,19 @@
 		<button type="button" id="menuButton" onclick="showMenu()" class="btn btn-default pull-left menuBtn" aria-label="menu">
 			<span class="fa fa-bars" aria-hidden="true"></span>
 		</button>
-		<h2>PDX Clean Eats</h2>
+		<h2 class="pull-left">PDX Clean Eats</h2>
+		<div class="pull-right">
+			<button type="button" ui-sref="list" class="btn btn-default menuBtn" aria-label="list">
+				<span class="fa fa-list-ul" aria-hidden="true"></span>
+			</button>
+			<button type="button" ui-sref="map" class="btn btn-default menuBtn" aria-label="menu">
+				<span class="fa fa-map" aria-hidden="true"></span>
+			</button>
+		</div>
 	</nav>
 
 	<div class="container mainView">
-		<div ng-show="loadingAni" class="loading"></div>
-		<div ng-show="noResults" class="alert alert-danger error" role="alert">
-				<h2>No results. Please adjust your search.</h2>
-		</div>
-		<label ng-show="complete">Search these results: <input ng-model="searchText" placeholder="Name or street"></label>
-		<div class="list-group-item" ng-repeat="restaurant in restaurants | filter:searchText | orderBy:'name'">
-			<h3>{{restaurant.name}}</h3>
-			<p>{{restaurant.address.street}}, {{restaurant.address.city}}</p>
-
-			<div class="list-group">
-				<a href="{{'#' + inspections.record_num}}" class="list-group-item violationBtn" ng-click="getInspection(inspections.record_num)" ng-repeat="inspections in restaurant.inspection_number">
-					<div class="inspection-container container-fluid">
-						<div class="row">
-							<div class="col-xs-12 col-sm-9">
-								Inspection#: {{inspections.record_num}} - Score: {{inspections.score}}
-								<b class="grade" ng-class="giveColor(inspections.score)">{{showGrade(inspections.score)}}</b>
-							</div>
-							<em class="inspection-date col-xs-12 col-sm-3">{{inspections.date}}</em>
-						</div>
-						<div id="{{inspections.record_num}}" ng-class="inspectionViolation" ng-repeat="records in inspectionsRecord[inspections.record_num]">
-							<hr>
-							<b>Violations:</b>
-							<div class="panel panel-default">
-		  						<div class="panel-body">
-		    						<div class="alert alert-danger" role="alert" ng-repeat="violations in records.violations | filter:filterEmpty">{{violations.violation_comments}}</div>
-		  						</div>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-		</div>
+		<div ui-view=""></div>
 	</div>
 	<script type="text/javascript">
 	function showMenu() {
