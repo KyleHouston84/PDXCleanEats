@@ -21,6 +21,7 @@ app.controller('restaurantController', function($scope, apiCall) {
 	$scope.complete = true;
 	$scope.noResults = false;
 	$scope.loadingAni = true;
+  $scope.markers = [];
 	$scope.grades = [
 		{grade: 'A', color: 'green'},
 		{grade: 'B', color: 'orange'},
@@ -31,14 +32,18 @@ app.controller('restaurantController', function($scope, apiCall) {
       apiCall.search('restaurants', '-122.676193,45.523773', 1).then(function (data) {
         //-122.610775,45.448050 less data for testing
         //-122.676193,45.523773
+        $scope.currentLatLng = '45.523773,-122.676193';
         $scope.restaurants = data;
+        //console.log("$scope.restaurants:");
+        //console.log($scope.restaurants[0].location);
         $scope.loadingAni = false;
         $scope.mapCenter = '45.523773,-122.676193';
       });
     };
 
     $scope.initalizeMap = function() {
-        var center = new google.maps.LatLng(45.522234, -122.676309); //<< pass in center latlng from either zip or myPos
+        $scope.clearMarkers();
+        var center = new google.maps.LatLng(45.522234, -122.676309);
         var styles = [
             {
                 elementType: "geometry",
@@ -57,16 +62,54 @@ app.controller('restaurantController', function($scope, apiCall) {
             styles: styles
         };
 
-        map = new google.maps.Map(document.getElementById('mapCanvas'),mapOptions);
+        $scope.map = new google.maps.Map(document.getElementById('mapCanvas'),mapOptions);
+        //Initialize infoWindows for the markers
+        var infowindow = new google.maps.InfoWindow();
+
+        //Close any open infoWindow if the map is clicked (don't want more than one open at a time)
+        google.maps.event.addListener($scope.map, 'click', function() {
+          infowindow.close();
+        });
 
         google.maps.event.addDomListener(window, "resize", function() {
-          var center = map.getCenter();
-          google.maps.event.trigger(map, "resize");
-          map.setCenter(center); 
+          var center = $scope.map.getCenter();
+          google.maps.event.trigger($scope.map, "resize");
+          $scope.map.setCenter(center); 
         });
+
+        $scope.placeMarkers();
+    };
+
+    $scope.$watch('markers', function() {
+      ($scope.restaurants != 'undefined') ? $scope.placeMarkers(): null;
+    });
+
+    $scope.placeMarkers = function() {
+      console.log("creating markers");
+      $scope.clearMarkers();
+      var iconMarker = 'img/restaurantMarkerSelected.png';
+      for(var i = 0; i < $scope.restaurants.length; i++){
+          marker = new google.maps.Marker({
+            map: $scope.map,
+            animation: google.maps.Animation.DROP,
+            icon: iconMarker,
+            position: new google.maps.LatLng($scope.restaurants[i].location.Latitude, $scope.restaurants[i].location.Longitude),
+            title: $scope.restaurants[i].name //hover pop-up name
+          });
+          $scope.markers.push(marker);
+
+        }
+    };
+
+    $scope.clearMarkers = function() {
+      console.log("clearing markers")
+      for(var i = 0; i < $scope.markers.length;i++) {
+        $scope.markers[i].setMap(null);
+      };
     };
 
   	$scope.searchByName = function(searchKeyword, distance) {
+
   		$scope.noResults = false;
   		apiCall.search('keywordSearch',searchKeyword, distance).then(function (data){
   			console.log(data[0].message);
@@ -84,7 +127,7 @@ app.controller('restaurantController', function($scope, apiCall) {
 	            var lngLat = zipLng + ',' + zipLat;
 	            var latLng = zipLat + ',' + zipLng;
 	            console.log(lngLat);
-              $scope.mapCenter = latLng;
+              $scope.map.setCenter(latLng);
 
 	            apiCall.search('restaurants',lngLat,distance).then(function (data) {
     				(data[0].message == "No records found.") ? $scope.noResults = true : $scope.restaurants = data;
@@ -98,6 +141,7 @@ app.controller('restaurantController', function($scope, apiCall) {
   	};
 
   	$scope.searchByArea = function(area, distance) {
+    $scope.clearMarkers();
 		var areaCoords = {
 			N: '-122.710774,45.585251',
 			NE: '-122.618728,45.553242',
@@ -107,6 +151,7 @@ app.controller('restaurantController', function($scope, apiCall) {
 		};
 
 		apiCall.search('restaurants', areaCoords[area], distance).then(function (data) {
+        //$scope.map.setCenter(latLng);
     		(data[0].message == "No records found.") ? $scope.noResults = true : $scope.restaurants = data;
   		});
   	};
