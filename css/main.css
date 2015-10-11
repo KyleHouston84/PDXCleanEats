@@ -1,22 +1,22 @@
 .nav {
-	overflow: hidden;
+  overflow: hidden;
 }
 a {
-	cursor: pointer;
+  cursor: pointer;
 }
 .mainView {
-	margin-top: 73px;
+  margin-top: 73px;
 }
 .verticalSpace {
     margin: 20px 0;
 }
 .sidebarMenu {
-	width: 0%;
-	height: 100%;
-	position: fixed;
-	left: 0;
-	top: 0;
-	z-index: 10000;
+  width: 0%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10000;
     background: #FFF;
     box-shadow: 1px 0 21px #000;
     overflow-x: hidden;
@@ -26,37 +26,37 @@ a {
 }
 
 .grade {
-	margin-left: 7px;
+  margin-left: 7px;
 }
 
 .inspection-container {
-	padding: 0;
+  padding: 0;
 }
 
 .green,
 .yellow,
 .red {
-	font-size: 1em;
+  font-size: 1em;
 }
 
 .green {
-	color: green;
+  color: green;
 }
 
 .orange {
-	color: orange;
+  color: orange;
 }
 
 .red {
-	color: red;
+  color: red;
 }
 
 .sidebarMenu.slideout {
-	width: 87%;
+  width: 87%;
 }
 .menuBtn,
 .gpsBtn {
-	margin: 20px 12px 0 5px;
+  margin: 20px 12px 0 5px;
 }
 .displayBtn {
   margin: 11px 12px 0 5px; 
@@ -84,7 +84,7 @@ a {
 }
 
 .error {
-	position: fixed;
+  position: fixed;
     top: 50%;
     left: 19%;
     z-index: 5000;
@@ -94,15 +94,15 @@ a {
 }
 
 .inspectionViolation {
-	overflow: hidden;
-	height: 0;
-	-webkit-transition: all 0.3s ease;
+  overflow: hidden;
+  height: 0;
+  -webkit-transition: all 0.3s ease;
     -ms-transition: all 0.3s ease;
     transition: all 0.3s ease;
 }
 
 .slideDown {
-	height: auto;
+  height: auto;
 }
 
 #mapCanvas {
@@ -114,12 +114,24 @@ a {
   height: 100%;
 }
 
+#ui-controls-menu {
+  display: none;
+}
 
 .show {
-	height: auto;
+  height: auto;
 }
 
 @keyframes rot {
-	from {transform: rotate(0deg);}
-	to {transform: rotate(359deg);}
+  from {transform: rotate(0deg);}
+  to {transform: rotate(359deg);}
+}
+
+@media only screen and (max-width: 385px) {
+  #ui-controls-nav {
+    display: none;
+  }
+  #ui-controls-menu {
+    display: block;
+  }
 }
