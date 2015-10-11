@@ -1,0 +1,32 @@
+<!-- <div ng-show="loadingAni" class="loading"></div> -->
+<div ng-show="noResults" class="alert alert-danger error" role="alert">
+		<h2>No results. Please adjust your search.</h2>
+</div>
+<label ng-show="complete">Search these results: <input ng-model="searchText" placeholder="Name or street"></label>
+<div class="list-group-item" ng-repeat="restaurant in restaurants | filter:searchText | orderBy:'name'">
+	<h3>{{restaurant.name}}</h3>
+	<p>{{restaurant.address.street}}, {{restaurant.address.city}}</p>
+
+	<div class="list-group">
+		<a href="{{'#' + inspections.record_num}}" class="list-group-item violationBtn" ng-click="getInspection(inspections.record_num)" ng-repeat="inspections in restaurant.inspection_number">
+			<div class="inspection-container container-fluid">
+				<div class="row">
+					<div class="col-xs-12 col-sm-9">
+						Inspection#: {{inspections.record_num}} - Score: {{inspections.score}}
+						<b class="grade" ng-class="giveColor(inspections.score)">{{showGrade(inspections.score)}}</b>
+					</div>
+					<em class="inspection-date col-xs-12 col-sm-3">{{inspections.date}}</em>
+				</div>
+				<div id="{{inspections.record_num}}" ng-class="inspectionViolation" ng-repeat="records in inspectionsRecord[inspections.record_num]">
+					<hr>
+					<b>Violations:</b>
+					<div class="panel panel-default">
+  						<div class="panel-body">
+    						<div class="alert alert-danger" role="alert" ng-repeat="violations in records.violations | filter:filterEmpty">{{violations.violation_comments}}</div>
+  						</div>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+</div>
