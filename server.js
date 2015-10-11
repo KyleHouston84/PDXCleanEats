@@ -231,7 +231,7 @@ router.addRoute("/*", st({
     index:'/'+indexFile+'.html' //allows alternative files
 }));
 
-//Creating server and start listening on port 8080
+//Creating server and start listening on port 5000
 var server = http.createServer(router);
-console.log('server listening on port # 8080');
-server.listen(8080);
+console.log('server listening on port # 5000');
+server.listen(5000);

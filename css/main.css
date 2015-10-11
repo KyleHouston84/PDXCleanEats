@@ -58,6 +58,9 @@ a {
 .gpsBtn {
 	margin: 20px 12px 0 5px;
 }
+.displayBtn {
+  margin: 11px 12px 0 5px; 
+}
 .violationBtn:after {
   content: "\f054";
   font-family: FontAwesome;

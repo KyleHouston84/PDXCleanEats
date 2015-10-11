@@ -69,12 +69,10 @@
 		</button>
 		<h2 class="pull-left">PDX Clean Eats</h2>
 		<div class="pull-right">
-			<button type="button" ui-sref="list" class="btn btn-default menuBtn" aria-label="list">
-				<span class="fa fa-list-ul" aria-hidden="true"></span>
-			</button>
-			<button type="button" ui-sref="map" class="btn btn-default menuBtn" aria-label="menu">
-				<span class="fa fa-map" aria-hidden="true"></span>
-			</button>
+			<ul class="nav nav-pills pull-right displayBtn">
+				<li ui-sref-active="active"><a ui-sref="list"><span class="fa fa-list-ul" aria-hidden="true"></span></a></li>
+				<li ui-sref-active="active"><a ui-sref="map"><span class="fa fa-map" aria-hidden="true"></a></li>
+			</ul>
 		</div>
 	</nav>
 

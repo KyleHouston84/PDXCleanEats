@@ -64,12 +64,6 @@ app.controller('restaurantController', function($scope, apiCall) {
 
         $scope.map = new google.maps.Map(document.getElementById('mapCanvas'),mapOptions);
         //Initialize infoWindows for the markers
-        var infowindow = new google.maps.InfoWindow();
-
-        //Close any open infoWindow if the map is clicked (don't want more than one open at a time)
-        google.maps.event.addListener($scope.map, 'click', function() {
-          infowindow.close();
-        });
 
         google.maps.event.addDomListener(window, "resize", function() {
           var center = $scope.map.getCenter();
@@ -80,14 +74,20 @@ app.controller('restaurantController', function($scope, apiCall) {
         $scope.placeMarkers();
     };
 
-    $scope.$watch('markers', function() {
-      ($scope.restaurants != 'undefined') ? $scope.placeMarkers(): null;
+    $scope.$watch('restaurants', function() {
+      $scope.placeMarkers();
     });
 
     $scope.placeMarkers = function() {
       console.log("creating markers");
       $scope.clearMarkers();
+      //var infowindow = new google.maps.InfoWindow();
       var iconMarker = 'img/restaurantMarkerSelected.png';
+      //Close any open infoWindow if the map is clicked (don't want more than one open at a time)
+      google.maps.event.addListener($scope.map, 'click', function() {
+        infowindow.close();
+      });
+
       for(var i = 0; i < $scope.restaurants.length; i++){
           marker = new google.maps.Marker({
             map: $scope.map,
@@ -97,6 +97,16 @@ app.controller('restaurantController', function($scope, apiCall) {
             title: $scope.restaurants[i].name //hover pop-up name
           });
           $scope.markers.push(marker);
+
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            console.log("Hey! You clicked a marker! This marker: " + marker);
+            return function() {
+                var restaurantID = $scope.restaurants[i].id;
+                //var inspectionNums = $scope.restaurants[i].inspection_number.join('_');
+                infowindow.setContent('<div class="restInfoWindow"><h4>' + $scope.restaurants[i].name + '</h4> Score: ' + $scope.restaurants[i].score + '<br><button class="showMore btn btn-primary">More Info</button><div>');
+                infowindow.open($scope.map, marker);
+            }
+          })(marker, i));
 
         }
     };
