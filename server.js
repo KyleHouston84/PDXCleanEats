@@ -47,9 +47,9 @@ function getRestaurants(response, query) {
                 for (var i = (obj.results.length - 1); i > -1; i--) {
                     //Changing inspection_number to an array of objects
                     obj.results[i].inspection_number = [{
-                    	'record_num' : obj.results[i].inspection_number, 
-                    	'score' : obj.results[i].score, 
-                    	'date' : obj.results[i].date
+                        'record_num' : obj.results[i].inspection_number, 
+                        'score' : obj.results[i].score, 
+                        'date' : obj.results[i].date
                     }];
 
                     if (obj.results[i].score != 0) {
@@ -66,11 +66,11 @@ function getRestaurants(response, query) {
                             }
                         };
                         if (index >= 0){
-                        	var tempObj = {
-                        		'record_num' : obj.results[i].inspection_number[0].record_num, 
-                        		'score' : obj.results[i].score, 
-                        		'date' : obj.results[i].date
-                        	};
+                            var tempObj = {
+                                'record_num' : obj.results[i].inspection_number[0].record_num, 
+                                'score' : obj.results[i].score, 
+                                'date' : obj.results[i].date
+                            };
                             arrBackbone[index].inspection_number.push(tempObj)
                         } else {
                             //This restaurant is not in arrBackbone yet
@@ -117,9 +117,9 @@ function seachRestaurants(response, query) {
                 for (var i = (obj.results.length - 1); i > -1; i--) {
                     //Changing inspection_number to an array of objects
                     obj.results[i].inspection_number = [{
-                    	'record_num' : obj.results[i].inspection_number, 
-                    	'score' : obj.results[i].score, 
-                    	'date' : obj.results[i].date
+                        'record_num' : obj.results[i].inspection_number, 
+                        'score' : obj.results[i].score, 
+                        'date' : obj.results[i].date
                     }];
 
                     if (obj.results[i].score != 0) {
@@ -136,11 +136,11 @@ function seachRestaurants(response, query) {
                             }
                         };
                         if (index >= 0){
-                        	var tempObj = {
-                        		'record_num' : obj.results[i].inspection_number[0].record_num, 
-                        		'score' : obj.results[i].score, 
-                        		'date' : obj.results[i].date
-                        	};
+                            var tempObj = {
+                                'record_num' : obj.results[i].inspection_number[0].record_num, 
+                                'score' : obj.results[i].score, 
+                                'date' : obj.results[i].date
+                            };
                             arrBackbone[index].inspection_number.push(tempObj)
                         } else {
                             //This restaurant is not in arrBackbone yet
@@ -164,7 +164,7 @@ function getInspection(response, query) {
     var queryArr = [];
     var responseData = [];
 
-	console.log("Query:");
+    console.log("Query:");
     query = query.substring(5);
     console.log(query);
 
@@ -233,5 +233,5 @@ router.addRoute("/*", st({
 
 //Creating server and start listening on port 5000
 var server = http.createServer(router);
-console.log('server listening on port # 5000');
-server.listen(5000);
+console.log('server listening on port #'+process.env.PORT);
+server.listen(process.env.PORT || 5000);

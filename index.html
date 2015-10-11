@@ -61,6 +61,12 @@
 				Search radius: <input type="range" ng-model="distanceSlider" min="0" max="5" step="0.1" value="1" id="fader">
 				{{distanceSlider}} miles
 			</div>
+			<div id="ui-controls-menu" class="pull-right">
+				<ul class="nav nav-pills pull-right displayBtn">
+					<li ui-sref-active="active"><a ui-sref="list"><span class="fa fa-list-ul" aria-hidden="true"></span></a></li>
+					<li ui-sref-active="active"><a ui-sref="map"><span class="fa fa-map" aria-hidden="true"></a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
 	<nav class="navbar navbar-default navbar-fixed-top">
@@ -68,7 +74,7 @@
 			<span class="fa fa-bars" aria-hidden="true"></span>
 		</button>
 		<h2 class="pull-left">PDX Clean Eats</h2>
-		<div class="pull-right">
+		<div id="ui-controls-nav" class="pull-right">
 			<ul class="nav nav-pills pull-right displayBtn">
 				<li ui-sref-active="active"><a ui-sref="list"><span class="fa fa-list-ul" aria-hidden="true"></span></a></li>
 				<li ui-sref-active="active"><a ui-sref="map"><span class="fa fa-map" aria-hidden="true"></a></li>
