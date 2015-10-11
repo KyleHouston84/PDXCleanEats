@@ -1,0 +1,25 @@
+{
+  "name": "PDXCleanEats",
+  "version": "1.0.0",
+  "description": "App for looking up Portland area restaurant inspections",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KyleHouston84/PDXCleanEats.git"
+  },
+  "author": "Kyle Houston",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KyleHouston84/PDXCleanEats/issues"
+  },
+  "homepage": "https://github.com/KyleHouston84/PDXCleanEats",
+  "dependencies": {
+    "request": "^2.64.0",
+    "routes-router": "^4.2.0",
+    "st": "^1.0.0"
+  }
+}
